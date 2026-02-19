@@ -89,7 +89,7 @@ function StatCard({ icon: Icon, label, value, sub, visual, trend, accent = "defa
     : "bg-surface border-border";
 
   return (
-    <div className={`flex flex-col gap-2 rounded-xl border p-3.5 shadow-[var(--shadow-xs)] transition-all duration-300 hover:shadow-[var(--shadow-sm)] hover:-translate-y-0.5 ${accentBg}`}>
+    <div className={`flex flex-col justify-between gap-2 rounded-xl border p-3.5 shadow-[var(--shadow-xs)] transition-all duration-300 hover:shadow-[var(--shadow-sm)] hover:-translate-y-0.5 ${accentBg}`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-1.5">
           <div className="flex h-6 w-6 items-center justify-center rounded-lg" style={{ background: `${accentColor}18` }}>
