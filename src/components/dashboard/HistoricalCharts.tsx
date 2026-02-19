@@ -1,60 +1,70 @@
 import {
   LineChart, Line, BarChart, Bar, XAxis, YAxis,
-  CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  CartesianGrid, Tooltip, ResponsiveContainer, Legend,
 } from "recharts";
 import { servers } from "@/data/mockData";
 
-const CHART_STYLE = {
-  background: "transparent",
-  fontSize: 11,
-};
-
-const tooltipStyle = {
-  backgroundColor: "hsl(220 18% 12%)",
-  border: "1px solid hsl(220 14% 22%)",
-  borderRadius: "8px",
-  color: "hsl(210 20% 90%)",
-  fontSize: "12px",
-};
-
-// Merge all time slots
 const allSlots = [...new Set(servers.flatMap((s) => s.activityBySlot.map((a) => a.slot)))].sort();
-const activityData = allSlots.map((slot) => {
+
+const scoreData = allSlots.map((slot) => {
   const row: Record<string, string | number> = { slot };
   servers.forEach((s) => {
-    const found = s.activityBySlot.find((a) => a.slot === slot);
-    row[s.name.split(" ")[0]] = found ? found.activity : 0;
+    const found = s.speedHistory.find((h) => h.time === slot);
+    row[s.name.split(" ")[0]] = found ? found.value : 0;
   });
   return row;
 });
 
-// Bar comparison data
-const comparisonData = servers.map((s) => ({
+const compData = servers.map((s) => ({
   name: s.name.split(" ")[0],
-  "Tables visitées": s.tablesVisited,
-  "Score": s.score,
-  color: s.color,
+  Score:          s.score,
+  "Tables":       s.tablesVisited,
+  fill:           s.color,
 }));
+
+const tooltipStyle = {
+  backgroundColor: "hsl(var(--surface))",
+  border: "1px solid hsl(var(--border))",
+  borderRadius: "12px",
+  color: "hsl(var(--foreground))",
+  fontSize: "12px",
+  boxShadow: "var(--shadow-lg)",
+  padding: "10px 14px",
+};
+
+const gridColor = "hsl(var(--border))";
+const tickColor = "hsl(var(--foreground-subtle))";
+
+function ChartCard({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
+  return (
+    <div className="rounded-2xl border border-border bg-surface overflow-hidden" style={{ boxShadow: "var(--shadow-md)" }}>
+      <div className="px-6 py-4 border-b border-border bg-surface-raised">
+        <h3 className="text-sm font-bold text-foreground">{title}</h3>
+        <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
+      </div>
+      <div className="p-5">{children}</div>
+    </div>
+  );
+}
 
 export function HistoricalCharts() {
   return (
     <div className="grid grid-cols-1 gap-5 lg:grid-cols-2">
       {/* Score evolution */}
-      <div className="rounded-xl border border-border bg-surface card-shadow">
-        <div className="px-5 py-3 border-b border-border bg-surface-raised">
-          <h3 className="text-sm font-semibold text-foreground">Score d'efficacité — Évolution</h3>
-          <p className="text-xs text-muted-foreground mt-0.5">Courbe par serveur sur le service</p>
-        </div>
-        <div className="p-4 h-56">
+      <ChartCard
+        title="Évolution du score d'efficacité"
+        subtitle="Courbe de performance par serveur sur le service"
+      >
+        <div className="h-60">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={activityData} style={CHART_STYLE}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 14% 18%)" />
-              <XAxis dataKey="slot" tick={{ fill: "hsl(215 12% 50%)", fontSize: 10 }} />
-              <YAxis domain={[0, 100]} tick={{ fill: "hsl(215 12% 50%)", fontSize: 10 }} />
-              <Tooltip contentStyle={tooltipStyle} />
+            <LineChart data={scoreData}>
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} strokeOpacity={0.6} />
+              <XAxis dataKey="slot" tick={{ fill: tickColor, fontSize: 10 }} axisLine={false} tickLine={false} />
+              <YAxis domain={[0, 100]} tick={{ fill: tickColor, fontSize: 10 }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={tooltipStyle} cursor={{ stroke: gridColor, strokeWidth: 1 }} />
               <Legend
-                wrapperStyle={{ fontSize: "11px", paddingTop: "8px" }}
-                formatter={(value) => <span style={{ color: "hsl(210 20% 80%)" }}>{value}</span>}
+                wrapperStyle={{ fontSize: "11px", paddingTop: "12px" }}
+                formatter={(v) => <span style={{ color: "hsl(var(--foreground-muted))" }}>{v}</span>}
               />
               {servers.map((s) => (
                 <Line
@@ -62,70 +72,46 @@ export function HistoricalCharts() {
                   type="monotone"
                   dataKey={s.name.split(" ")[0]}
                   stroke={s.color}
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                   dot={false}
-                  activeDot={{ r: 4, strokeWidth: 0 }}
+                  activeDot={{ r: 5, strokeWidth: 0, fill: s.color }}
                 />
               ))}
             </LineChart>
           </ResponsiveContainer>
         </div>
-      </div>
+      </ChartCard>
 
       {/* Comparison bar */}
-      <div className="rounded-xl border border-border bg-surface card-shadow">
-        <div className="px-5 py-3 border-b border-border bg-surface-raised">
-          <h3 className="text-sm font-semibold text-foreground">Comparaison des serveurs</h3>
-          <p className="text-xs text-muted-foreground mt-0.5">Score global & tables visitées</p>
-        </div>
-        <div className="p-4 h-56">
+      <ChartCard
+        title="Comparaison des serveurs"
+        subtitle="Score global et nombre de tables servies"
+      >
+        <div className="h-60">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={comparisonData} style={CHART_STYLE} barGap={4}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 14% 18%)" />
-              <XAxis dataKey="name" tick={{ fill: "hsl(215 12% 50%)", fontSize: 10 }} />
-              <YAxis tick={{ fill: "hsl(215 12% 50%)", fontSize: 10 }} />
-              <Tooltip contentStyle={tooltipStyle} />
+            <BarChart data={compData} barGap={6} barCategoryGap="30%">
+              <CartesianGrid strokeDasharray="3 3" stroke={gridColor} strokeOpacity={0.6} />
+              <XAxis dataKey="name" tick={{ fill: tickColor, fontSize: 10 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: tickColor, fontSize: 10 }} axisLine={false} tickLine={false} />
+              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "hsl(var(--border) / 0.3)" }} />
               <Legend
-                wrapperStyle={{ fontSize: "11px", paddingTop: "8px" }}
-                formatter={(value) => <span style={{ color: "hsl(210 20% 80%)" }}>{value}</span>}
+                wrapperStyle={{ fontSize: "11px", paddingTop: "12px" }}
+                formatter={(v) => <span style={{ color: "hsl(var(--foreground-muted))" }}>{v}</span>}
               />
-              <Bar dataKey="Score" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="Tables visitées" fill="hsl(var(--success))" radius={[4, 4, 0, 0]} />
+              <Bar
+                dataKey="Score"
+                radius={[6, 6, 0, 0]}
+                fill="hsl(var(--primary))"
+              />
+              <Bar
+                dataKey="Tables"
+                radius={[6, 6, 0, 0]}
+                fill="hsl(var(--success))"
+              />
             </BarChart>
           </ResponsiveContainer>
         </div>
-      </div>
-
-      {/* Activity heatmap-like bar chart */}
-      <div className="rounded-xl border border-border bg-surface card-shadow lg:col-span-2">
-        <div className="px-5 py-3 border-b border-border bg-surface-raised">
-          <h3 className="text-sm font-semibold text-foreground">Activité par tranche de 15 minutes</h3>
-          <p className="text-xs text-muted-foreground mt-0.5">Niveau d'activité de chaque serveur durant le service</p>
-        </div>
-        <div className="p-4 h-52">
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart data={activityData} style={CHART_STYLE} barGap={2}>
-              <CartesianGrid strokeDasharray="3 3" stroke="hsl(220 14% 18%)" />
-              <XAxis dataKey="slot" tick={{ fill: "hsl(215 12% 50%)", fontSize: 10 }} />
-              <YAxis domain={[0, 100]} tick={{ fill: "hsl(215 12% 50%)", fontSize: 10 }} />
-              <Tooltip contentStyle={tooltipStyle} />
-              <Legend
-                wrapperStyle={{ fontSize: "11px", paddingTop: "8px" }}
-                formatter={(value) => <span style={{ color: "hsl(210 20% 80%)" }}>{value}</span>}
-              />
-              {servers.map((s) => (
-                <Bar
-                  key={s.id}
-                  dataKey={s.name.split(" ")[0]}
-                  fill={s.color}
-                  radius={[2, 2, 0, 0]}
-                  fillOpacity={0.85}
-                />
-              ))}
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+      </ChartCard>
     </div>
   );
 }

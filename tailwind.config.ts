@@ -82,6 +82,11 @@ export default {
           ring:               "hsl(var(--sidebar-ring))",
         },
       },
+      backgroundImage: {
+        "gradient-amber":  "var(--gradient-amber)",
+        "gradient-page":   "var(--gradient-page)",
+        "gradient-header": "var(--gradient-header)",
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",

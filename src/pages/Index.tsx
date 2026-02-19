@@ -1,92 +1,118 @@
+import { AlertTriangle, XCircle } from "lucide-react";
 import { GlobalHeader } from "@/components/dashboard/GlobalHeader";
 import { ServerCard } from "@/components/dashboard/ServerCard";
-import { FloorMap } from "@/components/dashboard/FloorMap";
 import { HistoricalCharts } from "@/components/dashboard/HistoricalCharts";
-import { AlertsPanel } from "@/components/dashboard/AlertsPanel";
 import { servers } from "@/data/mockData";
 
-const Index = () => {
-  const criticalCount = servers.reduce(
-    (acc, s) => acc + s.alerts.filter((a) => a.type === "critical").length, 0
+/* ── Panneau d'alertes compactes ─────────────────────────── */
+function AlertsStrip() {
+  const alerts = servers
+    .flatMap((s) => s.alerts.map((a) => ({ ...a, serverName: s.name, serverColor: s.color })))
+    .sort((a) => (a.type === "critical" ? -1 : 1));
+
+  if (alerts.length === 0) return null;
+
+  return (
+    <div className="rounded-2xl border border-[hsl(var(--danger)/0.3)] bg-[hsl(var(--danger-dim))] overflow-hidden animate-fade-up" style={{ boxShadow: "var(--shadow-danger)" }}>
+      <div className="flex items-center gap-3 px-5 py-3 border-b border-[hsl(var(--danger)/0.2)]">
+        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[hsl(var(--danger))]">
+          <XCircle className="h-3 w-3 text-white" />
+        </span>
+        <span className="text-sm font-bold text-[hsl(var(--danger))]">
+          {alerts.filter((a) => a.type === "critical").length} alerte(s) critique(s) active(s)
+        </span>
+        <span className="ml-auto rounded-full bg-[hsl(var(--danger))] px-2.5 py-0.5 text-xs font-black text-white">
+          {alerts.length} total
+        </span>
+      </div>
+      <div className="flex flex-col divide-y divide-[hsl(var(--danger)/0.15)]">
+        {alerts.map((alert) => (
+          <div key={alert.id} className="flex items-center gap-3 px-5 py-2.5">
+            {alert.type === "critical"
+              ? <XCircle className="h-3.5 w-3.5 shrink-0 text-[hsl(var(--danger))]" />
+              : <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-[hsl(var(--warning))]" />}
+            <span className="text-xs text-foreground flex-1">{alert.message}</span>
+            <span className="text-[11px] font-bold font-mono shrink-0" style={{ color: alert.serverColor }}>
+              {alert.serverName.split(" ")[0]}
+            </span>
+            <span className="text-[10px] font-mono text-muted-foreground shrink-0">{alert.time}</span>
+          </div>
+        ))}
+      </div>
+    </div>
   );
+}
+
+/* ── Section header ──────────────────────────────────────── */
+function SectionHeader({ title, subtitle, right }: { title: string; subtitle: string; right?: React.ReactNode }) {
+  return (
+    <div className="flex items-end justify-between mb-5">
+      <div>
+        <h2 className="text-lg font-black text-foreground tracking-tight">{title}</h2>
+        <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
+      </div>
+      {right}
+    </div>
+  );
+}
+
+/* ── Page principale ─────────────────────────────────────── */
+const Index = () => {
+  const criticalAlerts = servers.flatMap((s) => s.alerts.filter((a) => a.type === "critical"));
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       <GlobalHeader />
 
-      <main className="flex-1 px-4 py-5 md:px-6 lg:px-8 space-y-6 max-w-[1600px] w-full mx-auto">
+      <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 md:px-6 lg:px-8 py-7 space-y-8">
 
-        {/* Alerts panel (only if there are alerts) */}
-        {criticalCount > 0 && <AlertsPanel />}
+        {/* Alertes critiques */}
+        {criticalAlerts.length > 0 && <AlertsStrip />}
 
-        {/* Server cards grid */}
+        {/* Cartes serveurs */}
         <section>
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-base font-semibold text-foreground">Serveurs actifs</h2>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Métriques individuelles · Mise à jour temps réel
-              </p>
-            </div>
-            <div className="flex items-center gap-4 text-xs text-muted-foreground">
-              <span className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-success" />
-                ≥ 70 Excellent
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-warning" />
-                40–69 À surveiller
-              </span>
-              <span className="flex items-center gap-1.5">
-                <span className="h-2 w-2 rounded-full bg-danger" />
-                &lt; 40 Alerte
-              </span>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            {servers.map((server, i) => (
-              <div key={server.id} style={{ animationDelay: `${i * 80}ms` }}>
-                <ServerCard server={server} />
+          <SectionHeader
+            title="Serveurs actifs"
+            subtitle="Métriques individuelles · Mise à jour en temps réel via IA"
+            right={
+              <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-[hsl(var(--success))]" />Excellent ≥ 70
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-[hsl(var(--warning))]" />À surveiller 40–69
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-[hsl(var(--danger))]" />Alerte &lt; 40
+                </span>
               </div>
+            }
+          />
+          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+            {servers.map((server, i) => (
+              <ServerCard key={server.id} server={server} delay={i * 90} />
             ))}
           </div>
         </section>
 
-        {/* Floor map */}
+        {/* Graphiques historiques */}
         <section>
-          <div className="mb-4">
-            <h2 className="text-base font-semibold text-foreground">Plan de salle</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Position en temps réel · Carte thermique de présence
-            </p>
-          </div>
-          <FloorMap />
-        </section>
-
-        {/* Historical charts */}
-        <section>
-          <div className="mb-4">
-            <h2 className="text-base font-semibold text-foreground">Historique du service</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              Évolution des scores · Comparaison · Activité par tranche horaire
-            </p>
-          </div>
+          <SectionHeader
+            title="Analyse du service"
+            subtitle="Évolution des performances · Comparaison entre serveurs"
+          />
           <HistoricalCharts />
         </section>
 
-        {/* All alerts at bottom */}
-        <section>
-          <div className="mb-4">
-            <h2 className="text-base font-semibold text-foreground">Journal des alertes</h2>
-            <p className="text-xs text-muted-foreground mt-0.5">Alertes automatiques du service en cours</p>
-          </div>
-          <AlertsPanel />
-        </section>
-
         {/* Footer */}
-        <footer className="border-t border-border pt-4 pb-6 flex items-center justify-between text-xs text-muted-foreground">
-          <span>The Kitchen AI System · 6 caméras IMOU · ArcFace + Classificateur uniforme</span>
-          <span className="font-mono">v1.0 · Service en cours depuis 19:00</span>
+        <footer className="flex items-center justify-between border-t border-border pt-5 pb-4 text-[11px] text-muted-foreground">
+          <div className="flex items-center gap-3">
+            <div className="flex h-6 w-6 items-center justify-center rounded-lg bg-gradient-amber">
+              <span className="text-[8px] font-black text-primary-foreground">TK</span>
+            </div>
+            <span>The Kitchen AI System · 6 caméras IMOU · ArcFace + Classificateur uniforme</span>
+          </div>
+          <span className="font-mono">Service en cours · Démarré à 19:00</span>
         </footer>
       </main>
     </div>
