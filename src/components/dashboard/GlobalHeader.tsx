@@ -158,17 +158,19 @@ export function GlobalHeader() {
   const statsContent = (
     <>
       <StatCard
-        icon={User} label="Serveurs actifs" value={s.activeServers}
-        sub={`${servers.filter(s => s.alerts.length === 0).length} sans alerte`}
-        accent="primary"
-        visual={
-          <div className="flex gap-1 items-end">
-            {servers.map((srv) => (
-              <div key={srv.id} className="h-2 w-2 rounded-full" style={{ background: srv.color }} />
+        icon={User} label="Serveurs actifs"
+        value={
+          <div className="flex flex-wrap gap-1.5">
+            {servers.map((srv, i) => (
+              <span key={srv.id} className="flex items-center gap-1">
+                <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: srv.color }} />
+                <span className="text-sm font-bold text-foreground">{srv.name.split(" ")[0]}</span>
+                {i < servers.length - 1 && <span className="text-muted-foreground font-normal">·</span>}
+              </span>
             ))}
           </div>
         }
-        trend={{ direction: "up", label: "+0", good: true }}
+        accent="primary"
       />
       <StatCard
         icon={TrendingUp} label="Score moyen" value={`${avgScore}`}

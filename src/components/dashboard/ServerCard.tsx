@@ -1,4 +1,4 @@
-import { AlertTriangle, XCircle, Camera, Clock, MapPin, Activity, Shield } from "lucide-react";
+import { AlertTriangle, XCircle, Camera, Clock, MapPin, Activity, Shield, Video } from "lucide-react";
 import type { Server } from "@/data/mockData";
 
 /* ── Gauge circulaire premium ──────────────────────────────── */
@@ -47,7 +47,7 @@ function PremiumGauge({ score, color, serverColor, size = 104 }: {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-2xl font-black font-mono leading-none" style={{ color }}>{score}</span>
-        <span className="text-[9px] font-semibold text-muted-foreground tracking-widest uppercase mt-0.5">Score</span>
+        <span className="text-[10px] font-semibold text-muted-foreground tracking-widest uppercase mt-0.5">Score</span>
       </div>
     </div>
   );
@@ -60,10 +60,10 @@ function MetricRow({ label, value, weight, barColor }: {
   return (
     <div>
       <div className="flex items-center justify-between mb-1">
-        <span className="text-[10px] text-muted-foreground truncate pr-2">{label}</span>
+        <span className="text-xs text-muted-foreground truncate pr-2">{label}</span>
         <div className="flex items-center gap-1.5 shrink-0">
-          <span className="rounded-full bg-muted px-1 py-0.5 text-[8px] font-bold text-muted-foreground">{weight}</span>
-          <span className="text-[10px] font-bold font-mono" style={{ color: barColor }}>{value}</span>
+          <span className="rounded-full bg-muted px-1 py-0.5 text-[9px] font-bold text-muted-foreground">{weight}</span>
+          <span className="text-xs font-bold font-mono" style={{ color: barColor }}>{value}</span>
         </div>
       </div>
       <div className="h-1.5 w-full rounded-full bg-border overflow-hidden">
@@ -84,9 +84,9 @@ function MetricRow({ label, value, weight, barColor }: {
 function InfoChip({ icon: Icon, label, value }: { icon: React.ElementType; label: string; value: string | number }) {
   return (
     <div className="flex items-center gap-1 rounded-lg bg-surface-raised border border-border px-2 py-1">
-      <Icon className="h-2.5 w-2.5 text-muted-foreground shrink-0" />
-      <span className="text-[9px] text-muted-foreground">{label}</span>
-      <span className="text-[9px] font-bold text-foreground font-mono">{value}</span>
+      <Icon className="h-3 w-3 text-muted-foreground shrink-0" />
+      <span className="text-[10px] text-muted-foreground">{label}</span>
+      <span className="text-[10px] font-bold text-foreground font-mono">{value}</span>
     </div>
   );
 }
@@ -161,7 +161,7 @@ export function ServerCard({ server, delay = 0 }: { server: Server; delay?: numb
             )}
           </div>
           <div className="min-w-0">
-            <h3 className="text-sm font-bold text-foreground leading-tight truncate">{server.name}</h3>
+            <h3 className="text-base font-bold text-foreground leading-tight truncate">{server.name}</h3>
             <div className="flex items-center gap-1 mt-0.5">
               <Camera className="h-2.5 w-2.5 text-muted-foreground shrink-0" />
               <span className="text-[10px] font-mono text-muted-foreground">{server.camera}</span>
@@ -169,10 +169,10 @@ export function ServerCard({ server, delay = 0 }: { server: Server; delay?: numb
           </div>
         </div>
         <div className="flex flex-col items-end gap-1 shrink-0 ml-2">
-          <span className={`rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide ${scoreLabelClass}`}>
+          <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide ${scoreLabelClass}`}>
             {scoreLabelText}
           </span>
-          <div className="flex items-center gap-1 text-[9px] text-muted-foreground">
+          <div className="flex items-center gap-1 text-[10px] text-muted-foreground">
             <Clock className="h-2.5 w-2.5" />
             {server.serviceDuration}
           </div>
@@ -184,32 +184,32 @@ export function ServerCard({ server, delay = 0 }: { server: Server; delay?: numb
         <PremiumGauge score={score} color={scoreColor} serverColor={server.color} size={96} />
         <div className="flex-1 grid grid-cols-2 gap-x-2 gap-y-2.5 min-w-0">
           <div>
-            <p className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground">Vitesse</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Vitesse</p>
             <p className="text-sm font-bold text-foreground font-mono leading-tight">
-              {server.speed.toFixed(1)}<span className="text-[9px] text-muted-foreground ml-0.5">px/f</span>
+              {server.speed.toFixed(1)}<span className="text-[10px] text-muted-foreground ml-0.5">px/f</span>
             </p>
-            <p className={`text-[10px] font-semibold ${speedColor}`}>{server.speedLabel}</p>
+            <p className={`text-xs font-semibold ${speedColor}`}>{server.speedLabel}</p>
           </div>
           <div>
-            <p className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground">Réactivité</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Réactivité</p>
             <p className="text-sm font-bold text-foreground font-mono leading-tight">
-              {server.avgResponseTime}<span className="text-[9px] text-muted-foreground ml-0.5">min</span>
+              {server.avgResponseTime}<span className="text-[10px] text-muted-foreground ml-0.5">min</span>
             </p>
-            <p className={`text-[10px] font-semibold ${reactivityColor}`}>{reactivityLabel}</p>
+            <p className={`text-xs font-semibold ${reactivityColor}`}>{reactivityLabel}</p>
           </div>
           <div>
-            <p className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground">Tables</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Tables</p>
             <p className="text-sm font-bold text-foreground font-mono leading-tight">
-              {server.tablesVisited}<span className="text-[9px] text-muted-foreground">/{server.totalTables}</span>
+              {server.tablesVisited}<span className="text-[10px] text-muted-foreground">/{server.totalTables}</span>
             </p>
-            <p className="text-[10px] text-muted-foreground">{Math.round(server.tablesVisited/server.totalTables*100)}%</p>
+            <p className="text-xs text-muted-foreground">{Math.round(server.tablesVisited/server.totalTables*100)}%</p>
           </div>
           <div>
-            <p className="text-[9px] font-semibold uppercase tracking-widest text-muted-foreground">Debout</p>
+            <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">Debout</p>
             <p className="text-sm font-bold text-foreground font-mono leading-tight">
-              {server.standingPercent}<span className="text-[9px] text-muted-foreground ml-0.5">%</span>
+              {server.standingPercent}<span className="text-[10px] text-muted-foreground ml-0.5">%</span>
             </p>
-            <p className="text-[10px] font-semibold text-success">Actif</p>
+            <p className="text-xs font-semibold text-success">Actif</p>
           </div>
         </div>
       </div>
@@ -238,17 +238,29 @@ export function ServerCard({ server, delay = 0 }: { server: Server; delay?: numb
           {server.alerts.map((alert) => (
             <div
               key={alert.id}
-              className={`flex items-start gap-2 px-4 py-2 text-[10px] leading-snug ${
+              className={`flex items-start gap-2 px-4 py-2.5 text-xs leading-snug ${
                 alert.type === "critical"
                   ? "bg-[hsl(var(--danger-dim))] text-[hsl(var(--danger))]"
                   : "bg-[hsl(var(--warning-dim))] text-[hsl(var(--warning))]"
               }`}
             >
               {alert.type === "critical"
-                ? <XCircle className="h-3 w-3 shrink-0 mt-0.5" />
-                : <AlertTriangle className="h-3 w-3 shrink-0 mt-0.5" />}
+                ? <XCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
+                : <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5" />}
               <span className="flex-1 font-medium">{alert.message}</span>
-              <span className="font-mono font-bold shrink-0 opacity-70 ml-1">{alert.time}</span>
+              <div className="flex items-center gap-1.5 shrink-0">
+                {alert.videoUrl && (
+                  <a
+                    href={alert.videoUrl}
+                    className="flex items-center gap-0.5 rounded border border-current/20 px-1.5 py-0.5 text-[10px] font-bold opacity-80 hover:opacity-100 transition-opacity"
+                    title="Voir la vidéo"
+                  >
+                    <Video className="h-2.5 w-2.5" />
+                    <span className="hidden sm:inline">Vidéo</span>
+                  </a>
+                )}
+                <span className="font-mono font-bold shrink-0 opacity-70">{alert.time}</span>
+              </div>
             </div>
           ))}
         </div>

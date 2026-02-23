@@ -1,4 +1,4 @@
-import { AlertTriangle, XCircle } from "lucide-react";
+import { AlertTriangle, XCircle, Video } from "lucide-react";
 import { GlobalHeader } from "@/components/dashboard/GlobalHeader";
 import { ServerCard } from "@/components/dashboard/ServerCard";
 import { HistoricalCharts } from "@/components/dashboard/HistoricalCharts";
@@ -29,16 +29,26 @@ function AlertsStrip() {
       </div>
       <div className="divide-y divide-[hsl(var(--danger)/0.12)]">
         {alerts.map((alert) => (
-          <div key={alert.id} className="flex items-start gap-2 px-4 py-2.5">
+          <div key={alert.id} className="flex items-start gap-2.5 px-4 py-3">
             {alert.type === "critical"
-              ? <XCircle className="h-3.5 w-3.5 shrink-0 mt-0.5 text-[hsl(var(--danger))]" />
-              : <AlertTriangle className="h-3.5 w-3.5 shrink-0 mt-0.5 text-[hsl(var(--warning))]" />}
-            <span className="text-xs text-foreground flex-1 leading-snug">{alert.message}</span>
+              ? <XCircle className="h-4 w-4 shrink-0 mt-0.5 text-[hsl(var(--danger))]" />
+              : <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-[hsl(var(--warning))]" />}
+            <span className="text-sm text-foreground flex-1 leading-snug">{alert.message}</span>
             <div className="flex items-center gap-2 shrink-0 ml-1">
-              <span className="text-[10px] font-bold font-mono hidden sm:block" style={{ color: alert.serverColor }}>
+              {alert.videoUrl && (
+                <a
+                  href={alert.videoUrl}
+                  className="flex items-center gap-1 rounded-lg border border-[hsl(var(--danger)/0.25)] bg-[hsl(var(--danger)/0.08)] px-2 py-1 text-[11px] font-bold text-[hsl(var(--danger))] hover:bg-[hsl(var(--danger)/0.15)] transition-colors"
+                  title="Voir la vidéo de l'incident"
+                >
+                  <Video className="h-3 w-3" />
+                  <span className="hidden sm:inline">{alert.videoThumb || "Vidéo"}</span>
+                </a>
+              )}
+              <span className="text-[11px] font-bold font-mono hidden sm:block" style={{ color: alert.serverColor }}>
                 {alert.serverName.split(" ")[0]}
               </span>
-              <span className="text-[10px] font-mono text-muted-foreground">{alert.time}</span>
+              <span className="text-[11px] font-mono text-muted-foreground">{alert.time}</span>
             </div>
           </div>
         ))}
@@ -52,8 +62,8 @@ function SectionHeader({ title, subtitle, right }: { title: string; subtitle: st
   return (
     <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mb-4 md:mb-5">
       <div>
-        <h2 className="text-base md:text-lg font-black text-foreground tracking-tight">{title}</h2>
-        <p className="text-xs text-muted-foreground mt-0.5">{subtitle}</p>
+        <h2 className="text-lg md:text-xl font-black text-foreground tracking-tight">{title}</h2>
+        <p className="text-sm text-muted-foreground mt-0.5">{subtitle}</p>
       </div>
       {right && <div className="hidden sm:flex">{right}</div>}
     </div>
@@ -79,7 +89,7 @@ const Index = () => {
             title="Serveurs actifs"
             subtitle="Métriques individuelles · Mise à jour en temps réel via IA"
             right={
-              <div className="flex items-center gap-3 text-[11px] text-muted-foreground">
+              <div className="flex items-center gap-3 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1.5">
                   <span className="h-2 w-2 rounded-full bg-[hsl(var(--success))]" />Excellent ≥ 70
                 </span>
