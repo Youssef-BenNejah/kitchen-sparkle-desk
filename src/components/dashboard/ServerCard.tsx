@@ -1,4 +1,6 @@
+import { useState } from "react";
 import { AlertTriangle, XCircle, Camera, Clock, MapPin, Activity, Shield, Video } from "lucide-react";
+import { VideoModal } from "@/components/dashboard/VideoModal";
 import type { Server } from "@/data/mockData";
 
 /* ── Gauge circulaire premium ──────────────────────────────── */
@@ -93,6 +95,7 @@ function InfoChip({ icon: Icon, label, value }: { icon: React.ElementType; label
 
 /* ── Carte serveur principale ──────────────────────────────── */
 export function ServerCard({ server, delay = 0 }: { server: Server; delay?: number }) {
+  const [videoModal, setVideoModal] = useState<{ camera: string; time: string; message: string } | null>(null);
   const score = server.score;
 
   const scoreColor =
@@ -250,14 +253,14 @@ export function ServerCard({ server, delay = 0 }: { server: Server; delay?: numb
               <span className="flex-1 font-medium">{alert.message}</span>
               <div className="flex items-center gap-1.5 shrink-0">
                 {alert.videoUrl && (
-                  <a
-                    href={alert.videoUrl}
-                    className="flex items-center gap-0.5 rounded border border-current/20 px-1.5 py-0.5 text-[10px] font-bold opacity-80 hover:opacity-100 transition-opacity"
+                  <button
+                    onClick={() => setVideoModal({ camera: server.camera, time: alert.time, message: alert.message })}
+                    className="flex items-center gap-0.5 rounded border border-current/20 px-1.5 py-0.5 text-[10px] font-bold opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
                     title="Voir la vidéo"
                   >
                     <Video className="h-2.5 w-2.5" />
                     <span className="hidden sm:inline">Vidéo</span>
-                  </a>
+                  </button>
                 )}
                 <span className="font-mono font-bold shrink-0 opacity-70">{alert.time}</span>
               </div>
@@ -265,6 +268,14 @@ export function ServerCard({ server, delay = 0 }: { server: Server; delay?: numb
           ))}
         </div>
       )}
+
+      <VideoModal
+        open={!!videoModal}
+        onClose={() => setVideoModal(null)}
+        camera={videoModal?.camera || ""}
+        time={videoModal?.time || ""}
+        alertMessage={videoModal?.message || ""}
+      />
     </div>
   );
 }
