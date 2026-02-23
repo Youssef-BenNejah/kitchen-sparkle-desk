@@ -161,11 +161,11 @@ export function GlobalHeader() {
         icon={User} label="Serveurs actifs"
         value={
           <div className="flex flex-wrap gap-1.5">
-            {servers.map((srv, i) => (
-              <span key={srv.id} className="flex items-center gap-1">
-                <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: srv.color }} />
-                <span className="text-sm font-bold text-foreground">{srv.name.split(" ")[0]}</span>
-                {i < servers.length - 1 && <span className="text-muted-foreground font-normal">·</span>}
+            {["x", "y", "z"].map((name, i) => (
+              <span key={name} className="flex items-center gap-1">
+                <span className="h-2.5 w-2.5 rounded-full shrink-0" style={{ background: servers[i]?.color || "hsl(var(--primary))" }} />
+                <span className="text-sm font-bold text-foreground">{name}</span>
+                {i < 2 && <span className="text-muted-foreground font-normal">·</span>}
               </span>
             ))}
           </div>
