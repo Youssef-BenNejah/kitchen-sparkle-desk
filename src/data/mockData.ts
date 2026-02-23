@@ -3,6 +3,8 @@ export interface ServerAlert {
   type: "critical" | "warning";
   message: string;
   time: string;
+  videoUrl?: string;
+  videoThumb?: string;
 }
 
 export interface TableStatus {
@@ -121,8 +123,8 @@ export const servers: Server[] = [
     recognitionScore: 94,
     lastZone: "Zone A - Entrée",
     alerts: [
-      { id: "a1", type: "warning", message: "Réactivité faible : 4.2 min en moyenne", time: "20:38" },
-      { id: "a2", type: "warning", message: "Couverture faible : 47% des tables", time: "20:25" },
+      { id: "a1", type: "warning", message: "Réactivité faible : 4.2 min en moyenne", time: "20:38", videoUrl: "#incident-a1", videoThumb: "CAM-04 · 20:38" },
+      { id: "a2", type: "warning", message: "Couverture faible : 47% des tables", time: "20:25", videoUrl: "#incident-a2", videoThumb: "CAM-04 · 20:25" },
     ],
     position: { x: 18, y: 62 },
     color: "#60A5FA",
@@ -160,9 +162,9 @@ export const servers: Server[] = [
     recognitionScore: 91,
     lastZone: "Zone D - Bar",
     alerts: [
-      { id: "a3", type: "critical", message: "Inactivité détectée : 3min 12s sans mouvement", time: "20:41" },
-      { id: "a4", type: "critical", message: "Table 4 non servie depuis 12 minutes", time: "20:30" },
-      { id: "a5", type: "warning",  message: "Score d'efficacité < 40 depuis 35 min", time: "20:07" },
+      { id: "a3", type: "critical", message: "Inactivité détectée : 3min 12s sans mouvement", time: "20:41", videoUrl: "#incident-a3", videoThumb: "CAM-01 · 20:41" },
+      { id: "a4", type: "critical", message: "Table 4 non servie depuis 12 minutes", time: "20:30", videoUrl: "#incident-a4", videoThumb: "CAM-01 · 20:30" },
+      { id: "a5", type: "warning",  message: "Score d'efficacité < 40 depuis 35 min", time: "20:07", videoUrl: "#incident-a5", videoThumb: "CAM-01 · 20:07" },
     ],
     position: { x: 80, y: 78 },
     color: "#F87171",
@@ -200,7 +202,7 @@ export const servers: Server[] = [
     recognitionScore: 97,
     lastZone: "Zone C - Terrasse",
     alerts: [
-      { id: "a6", type: "warning", message: "Table 14 en attente depuis 11 minutes", time: "20:40" },
+      { id: "a6", type: "warning", message: "Table 14 en attente depuis 11 minutes", time: "20:40", videoUrl: "#incident-a6", videoThumb: "CAM-05 · 20:40" },
     ],
     position: { x: 67, y: 22 },
     color: "#A78BFA",
