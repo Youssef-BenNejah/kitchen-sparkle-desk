@@ -116,7 +116,7 @@ const Index = () => {
               </div>
             }
           />
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3 md:gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-5">
             {servers.map((server, i) => (
               <ServerCard key={server.id} server={server} delay={i * 80} />
             ))}
