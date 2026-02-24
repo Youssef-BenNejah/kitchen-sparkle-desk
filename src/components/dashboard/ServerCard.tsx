@@ -223,9 +223,9 @@ export function ServerCard({ server, delay = 0 }: { server: Server; delay?: numb
       {/* ── Metric bars ── */}
       <div className="flex flex-col gap-2.5 px-4 pb-3">
         <MetricRow label="Vitesse déplacement"  value={server.speedScore}      weight="×30%" barColor={server.color} />
-        <MetricRow label="Réactivité clients"   value={server.reactivityScore} weight="×30%" barColor={scoreColor} />
-        <MetricRow label="Couverture tables"    value={server.coverageScore}   weight="×25%" barColor="hsl(var(--success))" />
-        <MetricRow label="Temps debout"         value={server.standingScore}   weight="×15%" barColor="hsl(217 91% 60%)" />
+        <MetricRow label="Réactivité clients"   value={server.reactivityScore} weight="×30%" barColor={server.color} />
+        <MetricRow label="Couverture tables"    value={server.coverageScore}   weight="×25%" barColor={server.color} />
+        <MetricRow label="Temps debout"         value={server.standingScore}   weight="×15%" barColor={server.color} />
       </div>
 
       {/* ── Info chips ── */}
